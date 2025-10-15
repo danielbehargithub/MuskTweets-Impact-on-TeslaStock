@@ -7,12 +7,13 @@ The goal was to test whether tweet sentiment and relevance can predict **abnorma
 
 ## 🚀 Project Overview
 
-This project investigates the short-term relationship between **Elon Musk’s tweets** and **Tesla’s stock price movements**.  
-Previous research has shown that **social media sentiment—especially from influential figures—can affect intraday stock volatility**  
-([Siregar et al., 2022](https://www.atlantis-press.com/proceedings/iciitb-22/125984182); [Ranco et al., 2018](https://www.emerald.com/ccij/article-pdf/24/4/593/408731/ccij-09-2018-0091.pdf)).
-
-Building on these findings, this analysis focuses on **intra-day effects** (minutes to hours after a tweet) rather than long-term trends,  
-aiming to identify whether tweet sentiment and relevance can predict **abnormal price changes** shortly after publication.
+This project examines the short-term market impact of **Elon Musk’s tweets** on **Tesla’s stock price**.  
+Building upon previous findings by [Stokanović Šević et al. (2022)](https://www.atlantis-press.com/proceedings/iciitb-22/125984182),  
+who analyzed the **semantic sentiment** of Musk’s tweets and demonstrated a measurable influence on Tesla’s market performance,  
+and [Strauss & Smith (2019)](https://www.emerald.com/ccij/article-pdf/24/4/593/408731/ccij-09-2018-0091.pdf),  
+who highlighted that such effects often occur **within minutes to hours**,  
+this project focuses on **intra-day reactions** — exploring whether the sentiment and relevance of Musk’s tweets  
+can predict **abnormal short-term movements** in Tesla’s stock price.
 
 - **Objective:** Analyze how the sentiment and relevance of Elon Musk’s tweets affect Tesla’s hourly stock performance.  
 - **Approach:** Combine NLP-based text analysis with financial time series data to model “abnormal” stock reactions.  
