@@ -8,17 +8,18 @@ The goal was to test whether tweet sentiment and relevance can predict **abnorma
 ## 🚀 Project Overview
 
 This project examines the short-term market impact of **Elon Musk’s tweets** on **Tesla’s stock price**.  
+Prior research has shown that social media activity, particularly from influential figures like Elon Musk can affect investor sentiment and market behavior.  
 Building upon previous findings by [Stokanović Šević et al. (2022)](https://www.atlantis-press.com/proceedings/iciitb-22/125984182),  
-who analyzed the **semantic sentiment** of Musk’s tweets and demonstrated a measurable influence on Tesla’s market performance,  
+who analyzed the **semantic sentiment** of Musk’s tweets and demonstrated a relationship between their sentiment and Tesla’s market performance,  
 and [Strauss & Smith (2019)](https://www.emerald.com/ccij/article-pdf/24/4/593/408731/ccij-09-2018-0091.pdf),  
 who highlighted that such effects often occur **within minutes to hours**,  
 this project focuses on **intra-day reactions** — exploring whether the sentiment and relevance of Musk’s tweets  
 can predict **abnormal short-term movements** in Tesla’s stock price.
 
-- **Objective:** Analyze how the sentiment and relevance of Elon Musk’s tweets affect Tesla’s hourly stock performance.  
-- **Approach:** Combine NLP-based text analysis with financial time series data to model “abnormal” stock reactions.  
-- **Core Idea:** A tweet may cause a sudden acceleration or drop in price movement.  
-  We define such reactions as *abnormal increases* and try to predict them from textual features.
+- **Objective:** Quantify the short-term (intra-day) impact of Elon Musk’s tweets on Tesla’s stock price by analyzing both **sentiment** and **topic relevance**.  
+- **Approach:** Combine NLP-based sentiment and semantic similarity analysis with **hourly financial data** from Yahoo Finance to model abnormal price responses.  
+- **Core Idea:** Tweets act as real-time market signals — we define **abnormal movements** as short-term price changes exceeding expected behavior,  
+  and test whether tweet-level textual features can predict these reactions.
 
 ---
 
@@ -26,22 +27,30 @@ can predict **abnormal short-term movements** in Tesla’s stock price.
 
 | Source | Description |
 |--------|--------------|
-| **Tweets dataset** | Elon Musk’s tweets (up to June 2023), including text, date, and metadata. |
-| **Stock data (yfinance)** | Tesla hourly stock prices (2 years back from latest tweet). |
-| **Libraries used** | `sentence-transformers`, `TextBlob`, `pandas`, `yfinance`, `scikit-learn`, `matplotlib` |
+| **Tweets dataset** | Historical tweets by Elon Musk (collected up to mid-2023), including text, timestamp, and metadata. Based on the [Elon Musk Tweets Dataset by G. Preda](https://www.kaggle.com/datasets/gpreda/elon-musk-tweets), publicly available on Kaggle. |
+| **Stock data (Yahoo Finance)** | Tesla’s hourly stock prices covering a two-year window preceding the last tweet in the dataset, retrieved via [Yahoo Finance](https://finance.yahoo.com/quote/TSLA/) using the `yfinance` library. |
+| **Libraries used** | `sentence-transformers`, `TextBlob`, `pandas`, `yfinance`, `matplotlib` |
+
+> 📘 *Tweets were used strictly for analytical and educational purposes. Stock data and tweet timestamps were aligned to evaluate short-term (intra-day) reactions.*
 
 ---
 
 ## 🧠 Methodology
 
-1. **Text Preprocessing**
-   - Removed URLs and special characters  
-   - Computed sentiment using `TextBlob`  
-   - Encoded semantic similarity with `SentenceTransformer (all-MiniLM-L6-v2)`  
+Both notebooks — [`Cleaning_tweets_data.ipynb`](notebooks/Cleaning_tweets_data.ipynb) and [`tweets_features.ipynb`](notebooks/tweets_features.ipynb) — together handle tweet cleaning and feature construction:
 
-2. **Relevance Scoring**
-   - Matched tweets against curated Tesla-related keyword lists  
-   - Computed a weighted “Tesla relevance” and “Financial relevance” score  
+- Removed URLs and special characters  
+- Built a **keyword relevance feature** using weighted term matching across Tesla, technology, and financial domains  
+- Computed sentiment scores (1–10) using **TextBlob**  
+- Encoded semantic similarity between each tweet and a Tesla reference paragraph using **SentenceTransformer (`all-MiniLM-L6-v2`)**
+
+Finally, the **keyword relevance** and **semantic similarity** components were fused into a unified **final relevance score**.  
+The combination used an *adaptive weighting scheme* — tweets containing richer Tesla-related vocabulary received higher weight on the semantic similarity component, while others relied more on keyword frequency.  
+This allowed the model to balance explicit term presence with contextual meaning.  
+
+Each tweet therefore receives two key features:  
+- `sentiment_score` — representing tone and polarity  
+- `final_relevance` — representing contextual relevance to Tesla
 
 3. **Financial Alignment**
    - Merged tweet timestamps with Tesla hourly stock prices (`merge_asof`)  
@@ -99,12 +108,6 @@ can predict **abnormal short-term movements** in Tesla’s stock price.
 
 ---
 
-## 🧰 Tech Stack
-
-`Python`, `pandas`, `scikit-learn`, `yfinance`, `sentence-transformers`, `TextBlob`, `matplotlib`
-
----
-
 ## 📂 Repository Structure
 
 ```
@@ -119,16 +122,6 @@ Tesla_Tweets_Stock_Prediction/
 │   └── model_utils.py
 └── README.md
 ```
-
----
-
-## 👤 Author
-
-**Daniel Behar**  
-🎓 B.Sc. Biotechnology Engineering, Braude College  
-💻 B.Sc. Data Science & Engineering, Technion (expected Oct 2025)  
-📍 QC & Analytical Development Associate @ Minovia Therapeutics  
-🔗 [LinkedIn](https://linkedin.com/in/daniel-behar) | [GitHub](https://github.com/danielbehar)
 
 ---
 
