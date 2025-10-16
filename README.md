@@ -75,7 +75,7 @@ The modeling was mainly in this notebook [`logistic_regression_model.ipynb`](htt
 To study the market impact of individual tweets, each tweet was aligned with the **nearest Tesla stock price observations** before and after posting.  
 The goal was to determine whether a tweet triggers an **abnormal short-term price reaction**, based solely on its textual properties (`sentiment_score` and `final_relevance`).
 
-In this context, an **abnormal event** represents a tweet that causes a *meaningful, trade-worthy change* in Tesla’s stock trajectory —  
+In this context, an **abnormal event** represents a tweet that causes a *meaningful, trade-worthy change* in Tesla’s stock trajectory-  
 the kind of move that an investor could realistically act following the tweet.
 
 ### Defining “Abnormal” Reactions
@@ -83,7 +83,7 @@ the kind of move that an investor could realistically act following the tweet.
 Three definitions were tested, each reflecting a different type of short-term price behavior:
 
 1. **Slope-based acceleration (`|slope_after| > 3 × |slope_before|`)**  
-   → Measures abrupt changes in *price momentum* — how sharply the stock accelerates after a tweet.
+   → Measures abrupt changes in *price momentum*- how sharply the stock accelerates after a tweet.
 
 2. **Absolute percent change ≥ 5%**  
    → Detects *large intraday swings* that would be considered major market reactions.
@@ -103,7 +103,7 @@ Tweets meeting the chosen condition (≥3%) were labeled as **abnormal**, others
   
 - From an investment standpoint, **precision** is the key metric.
 Every positive prediction represents a trade decision or capital exposure.
-A low precision means the model generates false alarms — triggering trades that risk money
+A low precision means the model generates false alarms- triggering trades that risk money
 without a solid underlying signal.
 
 
@@ -115,7 +115,7 @@ without a solid underlying signal.
 |-------------|----------------------|-----------|--------------------------|---------|----------------|
 | Slope ratio `>3×` | <1% | 0.95 | 0.00 | 0.00 | Almost no positive samples detected |
 | Δ% ≥ 5 | ~16% | 0.70 | **0.17** | 0.22 | Captures only extreme events |
-| Δ% ≥ 3 *(final)* | ~27% | 0.60 | **0.26** | 0.26 | Best trade-off — first meaningful predictive signal |
+| Δ% ≥ 3 *(final)* | ~27% | 0.60 | **0.26** | 0.26 | Best trade-off- first meaningful predictive signal |
 
 Feature correlations confirmed that **sentiment** and **relevance** were nearly independent (`r ≈ 0.014`),  
 with **relevance** showing some influence on price movement (`Coefficients ≈ 0.062`), where **sentiment** coefficients was nearlly zero.
@@ -130,7 +130,7 @@ with **relevance** showing some influence on price movement (`Coefficients ≈ 0
 
 These scatterplots show how each feature relates to the model’s predicted probability of an **abnormal** price reaction.  
 Each blue dot represents the model’s confidence, and red markers denote the true labels.  
-While `sentiment_score` alone shows weak correlation, `final_relevance` displays some gradient —  
+While `sentiment_score` alone shows weak correlation, `final_relevance` displays some gradient-  
 tweets with higher relevance tend to receive slightly higher predicted probabilities.
 
 ---
@@ -139,12 +139,12 @@ tweets with higher relevance tend to receive slightly higher predicted probabili
 <img width="1589" height="598" alt="image" src="https://github.com/user-attachments/assets/0dfc53d2-e456-4f3b-a233-27c702cafeee" />
 
 Each point (tweet) receives a predicted **probability of being “abnormal”**,  
-based on its position in the 2D feature space — `sentiment_score` on the x-axis and `final_relevance` on the y-axis.
+based on its position in the 2D feature space- `sentiment_score` on the x-axis and `final_relevance` on the y-axis.
 
 - In the **left plot**, the background color represents the model’s confidence level:  
   yellow–red areas indicate *higher predicted probability* of an abnormal reaction, while green zones indicate *lower probability*.  
-  The dashed line marks the 0.5 decision threshold — everything **above/right** of it would be classified as abnormal.  
-  The nearly uniform yellow coloring shows that the model struggles to create distinct probability regions — most tweets receive similar confidence scores.
+  The dashed line marks the 0.5 decision threshold- everything **above/right** of it would be classified as abnormal.  
+  The nearly uniform yellow coloring shows that the model struggles to create distinct probability regions- most tweets receive similar confidence scores.
 
 - In the **right plot**, that same decision rule is applied in a binary form:  
   Red = *predicted normal*, Blue = *predicted abnormal*. Pink dots represent tweets that were actually labeled as abnormal.  
@@ -161,7 +161,7 @@ based on its position in the 2D feature space — `sentiment_score` on the x-axi
   Some clearly Tesla-related tweets were misclassified as low relevance, showing limits in the keyword and embedding logic.
 
 - **Sentiment misinterpretation.**  
-  `TextBlob` struggled with irony, sarcasm, and ambiguous tone — common in Musk’s writing style.
+  `TextBlob` struggled with irony, sarcasm, and ambiguous tone- common in Musk’s writing style.
 
 - **Market timing issues.**  
   Tweets posted **outside trading hours** skewed short-term reaction estimates.
@@ -176,17 +176,47 @@ based on its position in the 2D feature space — `sentiment_score` on the x-axi
 
 ## 🧭 Summary
 
-Working on this project was both **challenging and fascinating** — not because of the final metrics, but because of the complexity behind them.  
+Working on this project was both **challenging and fascinating**- not because of the final metrics, but because of the complexity behind them.  
 Exploring how a single tweet from Elon Musk might move a trillion-dollar company’s stock turned out to be a deep lesson in **data realism**, **model design**, and **human language**.
 
-The process highlighted how many subtle factors must be considered — from market timing and model selection, to NLP feature quality and contextual ambiguity.  
+The process highlighted how many subtle factors must be considered- from market timing and model selection, to NLP feature quality and contextual ambiguity.  
 Even with simple tools, it was exciting to see how social and financial data intertwine, and how small modeling decisions can change an entire interpretation.
 
-This work reinforced a key takeaway: building data-driven insights isn’t just about prediction accuracy — it’s about understanding *why* the data behaves as it does, and what that means in the messy, unpredictable world of real markets.
+Despite these gaps, the project provides a solid starting point for exploring how text, time, and finance intersect- and a reminder that even imperfect models can reveal meaningful patterns.
 
-
+---
 
 ## 📜 License
 
 This project is for educational and research purposes only.  
 Stock data © Yahoo Finance. Tweets © Twitter / X.
+
+---
+
+## 🎲 Bonus: Investment Toy Model
+
+As a small experiment, an **investment-oriented toy analysis** was added- to imagine how a trader might use the model’s predictions in practice.
+
+### 📈 Expected Return Map
+Each model output can be interpreted as a “trade” on whether a tweet will cause an abnormal price move.  
+Assuming an average **+3% gain** for a correct signal and a **−1% loss** for a false one, the following contour map visualizes the **expected return** as a function of model precision and recall:
+
+Calculation of minimum value of precision to earn from this toy model:
+Min Precision = 0.01 / (0.03 + 0.01) = 0.25
+So we are slighly earning from this model
+
+---
+
+### ⚙️ Sharpe Ratio Snapshot
+To estimate risk-adjusted performance, a basic **Sharpe ratio** was computed for the subset of tweets labeled as “abnormal”, as in our toy world the risk free rate = 2%:
+
+Sharpe Ratio: -0.05
+
+Mean Return: -0.345
+
+Std Dev: 6.52
+
+
+This negative Sharpe confirms that- under naïve assumptions- the model’s predictive signals are **not yet profitable**.  
+However, the exercise highlights the real-world importance of improving **precision**, as every false signal directly translates into unnecessary market exposure.
+
