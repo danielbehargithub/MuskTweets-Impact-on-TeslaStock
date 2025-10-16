@@ -84,22 +84,48 @@ based solely on its textual properties (sentiment_score and final_relevance).
 - Features: sentiment_score, final_relevance
 - Evaluation Metrics: Accuracy, Precision, Recall, F1
 
-While the baseline model achieved high accuracy due to class imbalance, recall on abnormal events was limited —
+While the baseline model achieved high accuracy due to class imbalance, recall on abnormal events was limited -
 highlighting the inherent challenge of detecting rare, high-impact tweets.
 
 ---
 
-## 📈 Results
+## 📊 Defining “Abnormal” Market Reactions
 
-| Metric | Baseline | Balanced |
-|--------|-----------|-----------|
-| Accuracy | 0.95 | 0.60 |
-| Recall (Abnormal) | 0.00 | 0.26 |
-| Precision (Abnormal) | 0.00 | 0.26 |
+Before modeling, several alternative definitions were tested to formalize what counts as a **significant stock response** to a tweet.  
+Each definition reflects a different *market behavior hypothesis*:
 
-- Without class balancing, the model ignored rare abnormal cases (95% accuracy but 0 recall).  
-- After balancing, recall improved - the model started detecting real abnormal reactions, though accuracy dropped.  
-- Sentiment alone was not a strong predictor; relevance contributed slightly to separation.
+1. **Slope-based acceleration (`|slope_after| > 3 × |slope_before|`)**  
+   - Focuses on *momentum shifts* - tweets that cause the price to accelerate sharply relative to its pre-tweet slope.  
+   - Hypothesis: a strong reaction immediately after a tweet indicates that traders changed direction or intensity.  
+   - Result: extremely few such cases, implying that true momentum flips are rare on short timeframes.
+
+2. **Absolute percent change ≥ 5%**  
+   - Looks for *large, visible price swings* within about an hour after the tweet.  
+   - Hypothesis: only extreme events (e.g., “Tesla stock price is too high imo”) produce such reactions.  
+   - Result: too strict - captured only a small set of dramatic movements.
+
+3. **Absolute percent change ≥ 3%** *(final definition)*  
+   - Captures *moderate but meaningful* intraday changes typical for a volatile stock like Tesla.  
+   - Hypothesis: smaller shifts are still actionable for traders and reflect genuine sentiment-driven reactions.  
+   - This threshold achieved a better balance between rarity and practical investability.
+
+---
+
+### 📈 Modeling Results
+
+| Definition | Positive Label Ratio | Accuracy | Precision (Abnormal=1) | Recall | Interpretation |
+|-------------|----------------------|-----------|--------------------------|---------|----------------|
+| Slope ratio `>3×` | <1% | 0.95 | 0.00 | 0.00 | Almost no positive samples detected |
+| Δ% ≥ 5 | ~16% | 0.70 | **0.17** | 0.22 | Captures only extreme events |
+| Δ% ≥ 3 *(final)* | ~27% | 0.60 | **0.26** | 0.26 | Best trade-off - some predictive signal emerges |
+
+Feature correlations showed that **sentiment** and **relevance** are nearly independent (`r ≈ 0.014`),  
+with **relevance** having stronger model weight (`β ≈ 0.062`) and sentiment contributing minimally.
+
+> From an investment standpoint, **precision** is the key metric -  
+> when the model flags a tweet as “abnormal,” we care how often that signal is *truly actionable*.  
+> While the baseline logistic regression achieves modest precision (~0.25),  
+> it demonstrates that textual relevance alone carries some predictive power for short-term stock volatility.
 
 ---
 
