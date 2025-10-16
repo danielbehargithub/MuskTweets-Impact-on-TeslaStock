@@ -217,6 +217,6 @@ Mean Return: -0.345
 Std Dev: 6.52
 
 
-This negative Sharpe confirms that- under naïve assumptions- the model’s predictive signals are **not yet profitable**.  
-However, the exercise highlights the real-world importance of improving **precision**, as every false signal directly translates into unnecessary market exposure.
+This negative Sharpe confirms that- under naïve assumptions- the model’s predictive signals are **Disadvantageous**.  
+The exercise highlights the real-world importance of improving **precision**, as every false signal directly translates into unnecessary market exposure.
 
