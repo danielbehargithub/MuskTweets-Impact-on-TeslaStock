@@ -68,7 +68,9 @@ Each tweet therefore receives two key features:
 - `sentiment_score` - representing tone and polarity  
 - `final_relevance` - representing contextual relevance to Tesla
 
-## 🎯 Event Definition, Threshold Testing & Modeling
+## 🎯 Modeling
+
+The modeling was mainly in this notebook [`logistic_regression_model.ipynb`](https://github.com/danielbehargithub/MuskTweets-Impact-on-TeslaStock/blob/main/logistic_regression_model.ipynb)
 
 To study the market impact of individual tweets, each tweet was aligned with the **nearest Tesla stock price observations** before and after posting.  
 The goal was to determine whether a tweet triggers an **abnormal short-term price reaction**, based solely on its textual properties (`sentiment_score` and `final_relevance`).
@@ -123,43 +125,66 @@ with **relevance** showing some influence on price movement (`Coefficients ≈ 0
 
 ## 🎨 Visualization
 
-**Decision Boundary & Predictions**
+#### 1. Feature–Prediction Relationship
+<img width="1189" height="590" alt="image" src="https://github.com/user-attachments/assets/0e45b59b-c724-4364-8304-257845f8fed2" />
 
-![Decision Boundary](images/decision_boundary.png)
-
-- Most points fall in the “non-abnormal” region.  
-- Tweets with higher relevance and moderate sentiment show slightly higher abnormality likelihood.
-
----
-
-## 💡 Key Insights
-
-- Most tweets do **not** cause measurable stock movement - market remains efficient.  
-- Tweets **highly relevant to Tesla operations** show stronger correlation with price volatility.  
-- Sentiment polarity alone has limited predictive power - context and timing matter.  
-- Future models could incorporate:
-  - Tweet embeddings (BERT, finBERT)
-  - Trading volume
-  - Market sentiment indices
+These scatterplots show how each feature relates to the model’s predicted probability of an **abnormal** price reaction.  
+Each blue dot represents the model’s confidence, and red markers denote the true labels.  
+While `sentiment_score` alone shows weak correlation, `final_relevance` displays some gradient —  
+tweets with higher relevance tend to receive slightly higher predicted probabilities.
 
 ---
 
-## 📂 Repository Structure
+#### 2. Decision Boundary Visualization
+<img width="1589" height="598" alt="image" src="https://github.com/user-attachments/assets/0dfc53d2-e456-4f3b-a233-27c702cafeee" />
 
-```
-Tesla_Tweets_Stock_Prediction/
-│
-├── data/                        # (optional) tweets_with_analysis_scores_2_years.csv
-├── notebooks/
-│   └── Cleaning_tweets_data.ipynb
-├── images/
-│   └── decision_boundary.png
-├── src/
-│   └── model_utils.py
-└── README.md
-```
+Each point (tweet) receives a predicted **probability of being “abnormal”**,  
+based on its position in the 2D feature space — `sentiment_score` on the x-axis and `final_relevance` on the y-axis.
+
+- In the **left plot**, the background color represents the model’s confidence level:  
+  yellow–red areas indicate *higher predicted probability* of an abnormal reaction, while green zones indicate *lower probability*.  
+  The dashed line marks the 0.5 decision threshold — everything **above/right** of it would be classified as abnormal.  
+  The nearly uniform yellow coloring shows that the model struggles to create distinct probability regions — most tweets receive similar confidence scores.
+
+- In the **right plot**, that same decision rule is applied in a binary form:  
+  Red = *predicted normal*, Blue = *predicted abnormal*. Pink dots represent tweets that were actually labeled as abnormal.  
+  The dense overlap between normal and abnormal samples indicates that the current features provide limited discriminative power.
+  This lack of clear separation suggests that the relationship between tweet content and stock reaction is more complex than what linear models and simple sentiment/relevance scores can capture.
+---
+
+## ⚠️ Limitations
+
+- **Not every tweet–market link is causal.**  
+  Musk’s influence extends beyond Tesla; tweets unrelated to the company can still shake the market through political or economic sentiment.
+
+- **Feature reliability.**  
+  Some clearly Tesla-related tweets were misclassified as low relevance, showing limits in the keyword and embedding logic.
+
+- **Sentiment misinterpretation.**  
+  `TextBlob` struggled with irony, sarcasm, and ambiguous tone — common in Musk’s writing style.
+
+- **Market timing issues.**  
+  Tweets posted **outside trading hours** skewed short-term reaction estimates.
+
+- **Narrow feature space.**  
+  Only `sentiment_score` and `final_relevance` were modeled, omitting engagement, trading volume, volatility, and other context signals.
+
+- **Modeling simplicity.**  
+  Logistic regression assumes linear separability; nonlinear models (e.g., gradient boosting, transformers) could capture deeper linguistic–financial dynamics.
 
 ---
+
+## 🧭 Summary
+
+Working on this project was both **challenging and fascinating** — not because of the final metrics, but because of the complexity behind them.  
+Exploring how a single tweet from Elon Musk might move a trillion-dollar company’s stock turned out to be a deep lesson in **data realism**, **model design**, and **human language**.
+
+The process highlighted how many subtle factors must be considered — from market timing and model selection, to NLP feature quality and contextual ambiguity.  
+Even with simple tools, it was exciting to see how social and financial data intertwine, and how small modeling decisions can change an entire interpretation.
+
+This work reinforced a key takeaway: building data-driven insights isn’t just about prediction accuracy — it’s about understanding *why* the data behaves as it does, and what that means in the messy, unpredictable world of real markets.
+
+
 
 ## 📜 License
 
