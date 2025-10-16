@@ -8,18 +8,11 @@ The goal was to test whether tweet sentiment and relevance can predict **abnorma
 ## 🚀 Project Overview
 
 This project examines the short-term market impact of **Elon Musk’s tweets** on **Tesla’s stock price**.  
-Prior research has shown that social media activity, particularly from influential figures like Elon Musk can affect investor sentiment and market behavior.  
-Building upon previous findings by [Stokanović Šević et al. (2022)](https://www.atlantis-press.com/proceedings/iciitb-22/125984182),  
-who analyzed the **semantic sentiment** of Musk’s tweets and demonstrated a relationship between their sentiment and Tesla’s market performance,  
-and [Strauss & Smith (2019)](https://www.emerald.com/ccij/article-pdf/24/4/593/408731/ccij-09-2018-0091.pdf),  
-who highlighted that such effects often occur **within minutes to hours**,  
-this project focuses on **intra-day reactions** - exploring whether the sentiment and relevance of Musk’s tweets  
-can predict **abnormal short-term movements** in Tesla’s stock price.
+Prior research has shown that social media activity, particularly from influential figures like Elon Musk can affect investor sentiment and market behavior. Building upon previous findings by [Stokanović Šević et al. (2022)](https://www.atlantis-press.com/proceedings/iciitb-22/125984182), who analyzed the **semantic sentiment** of Musk’s tweets and demonstrated a relationship between their sentiment and Tesla’s market performance, and [Strauss & Smith (2019)](https://www.emerald.com/ccij/article-pdf/24/4/593/408731/ccij-09-2018-0091.pdf), who highlighted that such effects often occur **within minutes to hours**, this project focuses on **intra-day reactions** - exploring whether the sentiment and relevance of Musk’s tweets can predict **abnormal short-term movements** in Tesla’s stock price.
 
-- **Objective:** Quantify the short-term (intra-day) impact of Elon Musk’s tweets on Tesla’s stock price by analyzing both **sentiment** and **topic relevance**.  
+- **Objective:** Quantify the short-term (intra-day) impact of Elon Musk’s tweets on Tesla’s stock price by analyzing both **sentiment** and **topic relevance**.
 - **Approach:** Combine NLP-based sentiment and semantic similarity analysis with **hourly financial data** from Yahoo Finance to model abnormal price responses.  
-- **Core Idea:** Tweets act as real-time market signals - we define **abnormal movements** as short-term price changes exceeding expected behavior,  
-  and test whether tweet-level textual features can predict these reactions.
+- **Core Idea:** Tweets act as real-time market signals - we define **abnormal movements** as short-term price changes exceeding expected behavior, and test whether tweet-level textual features can predict these reactions.
 
 ---
 
@@ -45,7 +38,7 @@ Both notebooks - [`Cleaning_tweets_data.ipynb`](https://github.com/danielbehargi
 - Encoded semantic similarity between each tweet and a Tesla reference paragraph using **SentenceTransformer (`all-MiniLM-L6-v2`)**
 
 Finally, the **keyword relevance** and **semantic similarity** components were fused into a unified **final relevance score**.  
-The combination used an *adaptive weighting scheme* - tweets containing richer Tesla-related vocabulary received higher weight on the semantic similarity component, while others were "punished" by there low vocabulary frequency.  
+The combination used an *adaptive weighting scheme* - tweets containing richer Tesla-related vocabulary received higher weight on the semantic similarity component, while others were "punished" by thier low vocabulary frequency.  
 This allowed the model to balance explicit term presence with contextual meaning.  
 
 The following examples illustrate how the adaptive weighting translates textual content into relevance scores:
@@ -72,13 +65,13 @@ Each tweet therefore receives two key features:
 
 The modeling was mainly in this notebook [`logistic_regression_model.ipynb`](https://github.com/danielbehargithub/MuskTweets-Impact-on-TeslaStock/blob/main/logistic_regression_model.ipynb)
 
-To study the market impact of individual tweets, each tweet was aligned with the **nearest Tesla stock price observations** before and after posting.  
+To study the market impact of individual tweets, each tweet was aligned with the **nearest Tesla stock price observations** before and after posting.
 The goal was to determine whether a tweet triggers an **abnormal short-term price reaction**, based solely on its textual properties (`sentiment_score` and `final_relevance`).
 
-In this context, an **abnormal event** represents a tweet that causes a *meaningful, trade-worthy change* in Tesla’s stock trajectory-  
-the kind of move that an investor could realistically act following the tweet.
+In this context, an **abnormal event** represents a tweet that causes a *meaningful, trade-worthy change* in Tesla’s stock trajectory- the kind of move that an investor could realistically act following the tweet.
 
 ### Defining “Abnormal” Reactions
+
 
 Three definitions were tested, each reflecting a different type of short-term price behavior:
 
@@ -92,6 +85,8 @@ Three definitions were tested, each reflecting a different type of short-term pr
    → Captures *moderate but significant short-term movements* that are still actionable for traders.
 
 Tweets meeting the chosen condition (≥3%) were labeled as **abnormal**, others as **normal**.
+
+The relative price change Δ% was computed as  ((**Price_after** − **Price_before**) / **Price_before**) × 100
 
 ---
 
@@ -118,7 +113,7 @@ without a solid underlying signal.
 | Δ% ≥ 3 *(final)* | ~27% | 0.60 | **0.26** | 0.26 | Best trade-off- first meaningful predictive signal |
 
 Feature correlations confirmed that **sentiment** and **relevance** were nearly independent (`r ≈ 0.014`),  
-with **relevance** showing some influence on price movement (`Coefficients ≈ 0.062`), where **sentiment** coefficients was nearlly zero.
+with **relevance** showing some influence on price movement (`Coefficients ≈ 0.062`), where **sentiment** coefficients were nearly zero.
 
 
 ---
@@ -203,20 +198,17 @@ Assuming an average **+3% gain** for a correct signal and a **−1% loss** for a
 
 Calculation of minimum value of precision to earn from this toy model:
 Min Precision = 0.01 / (0.03 + 0.01) = 0.25
-So we are slighly earning from this model
+So we are slightly earning from this model
 
 ---
 
 ### ⚙️ Sharpe Ratio Snapshot
-To estimate risk-adjusted performance, a basic **Sharpe ratio** was computed for the subset of tweets labeled as “abnormal”, as in our toy world the risk free rate = 2%:
+To estimate risk-adjusted performance, a basic **Sharpe ratio** was computed for the subset of tweets labeled as “abnormal”, assuming a 2% risk-free rate and using our toy return assumptions.
+**Results:**
+- Sharpe Ratio: -0.05
+- Mean Return: -0.345
+- Std Dev: 6.52
 
-Sharpe Ratio: -0.05
-
-Mean Return: -0.345
-
-Std Dev: 6.52
-
-
-This negative Sharpe confirms that- under naïve assumptions- the model’s predictive signals are **Disadvantageous**.  
+This negative Sharpe confirms that under naïve assumptions- the model’s predictive signals are **disadvantageous**.  
 The exercise highlights the real-world importance of improving **precision**, as every false signal directly translates into unnecessary market exposure.
 
