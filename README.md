@@ -64,30 +64,28 @@ The following examples illustrate how the adaptive weighting translates textual 
   Only a minor overlap in clean energy terminology yields a **keyword score of 2**  
   and a **final relevance of ~2.5**, correctly identifying it as off-topic.
 
-This demonstrates how the **adaptive weighting scheme** rewards tweets that are semantically aligned with Tesla-related language,  
-while off-topic messages - even from the same author - receive substantially lower relevance scores.
-
-
 Each tweet therefore receives two key features:  
 - `sentiment_score` - representing tone and polarity  
 - `final_relevance` - representing contextual relevance to Tesla
 
-3. **Financial Alignment**
-   - Merged tweet timestamps with Tesla hourly stock prices (`merge_asof`)  
-   - Calculated slopes, percent changes, and 1-hour post-tweet deltas  
+## 🎯 Event Definition & Modeling
 
-4. **Label Definition**
-   ```python
-   threshold = 3
-   merged_df['absolute_change'] = abs(merged_df['percent_change_after'] - merged_df['percent_change_before'])
-   merged_df['is_abnormal_increase'] = (merged_df['absolute_change'] > threshold).astype(int)
-   ```
-   - Tweets causing >3% change in price movement were labeled as “abnormal”.
+To study the market impact of individual tweets, each tweet was aligned with the **nearest Tesla stock price observations** before and after posting.  
 
-5. **Modeling**
-   - Logistic Regression (baseline & class-balanced)  
-   - Features: `sentiment_score`, `final_relevance`  
-   - Evaluation via Accuracy, Precision, Recall, F1  
+An **abnormal price reaction** was defined as a tweet followed by a **≥3% directional change** in Tesla’s short-term price movement.  
+Tweets meeting this condition were labeled as **“abnormal”**, while others were labeled as **“normal”**.
+
+The classification task was then framed as predicting whether a tweet would trigger an abnormal price reaction,
+based solely on its textual properties (sentiment_score and final_relevance).
+
+**Modeling Approach:**
+
+- Logistic Regression (tested both standard and class-balanced versions)
+- Features: sentiment_score, final_relevance
+- Evaluation Metrics: Accuracy, Precision, Recall, F1
+
+While the baseline model achieved high accuracy due to class imbalance, recall on abnormal events was limited —
+highlighting the inherent challenge of detecting rare, high-impact tweets.
 
 ---
 
