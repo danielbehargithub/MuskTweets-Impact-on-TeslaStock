@@ -45,8 +45,7 @@ The following examples illustrate how the adaptive weighting translates textual 
 
 - **“Tesla stock price is too high imo”**  
   → A historically impactful tweet that caused an immediate stock drop.  
-  It includes direct Tesla and financial terms, yielding a **keyword score of 6**,  
-  a **semantic similarity score of 8.6**, and a **final relevance of 8.2**.  
+  It includes direct Tesla and financial terms, yielding a **keyword score of 6**, a **semantic similarity score of 8.6**, and a **final relevance of 8.2**.  
   High overall relevance reflects both explicit Tesla mention and strong contextual match.
 
 - **“I should clarify: Tesla stock is obviously high based on past & present, but low if you believe in Tesla's future.”**  
@@ -54,8 +53,7 @@ The following examples illustrate how the adaptive weighting translates textual 
 
 - **“Thanks for the longstanding faith in SpaceX...”**  
   → Although similar in tone, this tweet concerns **SpaceX**, not Tesla.  
-  Only a minor overlap in clean energy terminology yields a **keyword score of 2**  
-  and a **final relevance of ~2.5**, correctly identifying it as off-topic.
+  Only a minor overlap in clean energy terminology yields a **keyword score of 2** and a **final relevance of ~2.5**, correctly identifying it as off-topic.
 
 Each tweet therefore receives two key features:  
 - `sentiment_score` - representing tone and polarity  
